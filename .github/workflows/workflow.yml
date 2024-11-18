@@ -1,0 +1,27 @@
+name: Build & Test # Name can be anything else you want
+
+on: 
+  [pull_request]
+
+jobs:
+  build: # This is just the name of the job, it can be changed to something else if you wish
+    
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0
+    - name: Restore workloads
+      run: dotnet workload restore ./Pipeline/Pipeline/Pipeline.csproj
+    - name: Restore dependencies
+      run: dotnet restore ./Pipeline/Pipeline/Pipeline.csproj
+    - name: Build project
+      run: dotnet build <path to .csproj file> --framework net8.0
+    - name: Build
+      run: dotnet build ${{ vars.CSPROJ_PATH }} --framework net8.0
+    - name: test
+      run: dotnet test <path to .sln> --framework net8.0
